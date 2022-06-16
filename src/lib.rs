@@ -3,23 +3,15 @@ use sha1::{Digest, Sha1};
 /// Usage: stolon-hash::crack_sha1(wordlist, password_hash)
 
 #[allow(dead_code, unused)]
-fn crack_sha1(wordlist: &Vec<&str>, hashed: &String) -> Option<String> {
-    let cracked = wordlist
-        .into_iter()
-        .filter_map(|&w| {
-            if hashed == &hex::encode(Sha1::digest(w.as_bytes())) {
-                Some(w.to_string())
-            } else {
-                None
-            }
-        })
-        .collect::<String>();
 
-    if cracked.len() > 0 {
-        Some(cracked)
-    } else {
-        None
-    }
+fn crack_sha1<'a>(wordlist: &Vec<&'a str>, hashed: &String) -> Option<&'a str> {
+    wordlist.into_iter().find_map(|w| {
+        if *hashed == hex::encode(Sha1::digest(w.as_bytes())) {
+            Some(w.to_owned())
+        } else {
+            None
+        }
+    })
 }
 
 #[cfg(test)]
@@ -44,8 +36,8 @@ mod tests {
     fn crack_sha1_positive_result() {
         let (password, hashed) = setup();
         assert_eq!(
-            crack_sha1(&vec!["dog", "frog", "frog", "bat"], &hashed),
-            Some(password),
+            crack_sha1(&vec!["dog", "frog", "frog", "bat"], &hashed).unwrap(),
+            password,
         )
     }
 }
