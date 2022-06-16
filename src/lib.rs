@@ -3,7 +3,7 @@ use sha2::Digest;
 
 /// Usage: stolon-hash::crack_sha::<Sha1>(wordlist, password_hash)
 
-pub fn crack_sha<'a, D>(wordlist: &Vec<&'a str>, hashed: &String) -> Option<&'a str>
+pub fn crack_sha<'a, D>(wordlist: &Vec<String>, hashed: &String) -> Option<String>
 where
     D: Digest,
 {
@@ -38,7 +38,14 @@ mod tests {
     fn crack_sha_negative_result() {
         let (_, hashed) = setup::<Sha256>();
         assert_eq!(
-            crack_sha::<Sha256>(&vec!["dog", "cat", "bat"], &hashed),
+            crack_sha::<Sha256>(
+                &vec![
+                    String::from("dog"),
+                    String::from("cat"),
+                    String::from("bat")
+                ],
+                &hashed
+            ),
             None
         );
     }
@@ -47,17 +54,31 @@ mod tests {
     fn crack_sha_positive_result() {
         let (password, hashed) = setup::<Sha256>();
         assert_eq!(
-            crack_sha::<Sha256>(&vec!["dog", "frog", "frog", "bat"], &hashed).unwrap(),
-            password,
-        )
+            crack_sha::<Sha256>(
+                &vec![
+                    String::from("dog"),
+                    String::from("frog"),
+                    String::from("bat")
+                ],
+                &hashed
+            ),
+            Some(password)
+        );
     }
 
     #[test]
     fn crack_sha_generic_param() {
         let (password, hashed) = setup::<Sha512>();
         assert_eq!(
-            crack_sha::<Sha512>(&vec!["dog", "frog", "cat"], &hashed).unwrap(),
-            password
-        )
+            crack_sha::<Sha512>(
+                &vec![
+                    String::from("dog"),
+                    String::from("frog"),
+                    String::from("frog")
+                ],
+                &hashed
+            ),
+            Some(password)
+        );
     }
 }
