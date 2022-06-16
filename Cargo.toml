@@ -5,4 +5,5 @@ edition = "2021"
 
 [dependencies]
 sha-1 = "0.10"
+sha2 = "0.10"
 hex = "0.4"
