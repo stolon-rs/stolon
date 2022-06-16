@@ -1,5 +1,5 @@
 [package]
-name = "stolon-hash"
+name = "stolon_hash"
 version = "0.1.0"
 edition = "2021"
 
