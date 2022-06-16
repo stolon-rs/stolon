@@ -1,6 +1,6 @@
-use sha1::{Digest, Sha1};
+use sha2::Digest;
 
-/// Usage: stolon-hash::crack_sha1(wordlist, password_hash)
+/// Usage: stolon-hash::crack_sha::<Sha1>(wordlist, password_hash)
 
 #[allow(dead_code, unused)]
 
@@ -9,7 +9,7 @@ where
     D: Digest,
 {
     wordlist.into_iter().find_map(|w| {
-        let mut hasher = Sha1::new();
+        let mut hasher = D::new();
         hasher.update(w.as_bytes());
         if *hashed == hex::encode(hasher.finalize()) {
             Some(w.to_owned())
@@ -21,28 +21,42 @@ where
 
 #[cfg(test)]
 mod tests {
-    use sha1::{Digest, Sha1};
-
     use super::*;
+    use sha1::Sha1;
+    use sha2::Sha256;
 
-    fn setup() -> (String, String) {
+    fn setup<D>() -> (String, String)
+    where
+        D: Digest,
+    {
         let password = "frog".to_string();
-        let hashed: String = hex::encode(Sha1::digest(password.as_bytes()));
+        let mut hasher = D::new();
+        hasher.update(password.as_bytes());
+        let hashed: String = hex::encode(hasher.finalize());
         (password, hashed)
     }
 
     #[test]
-    fn crack_sha1_negative_result() {
-        let (_, hashed) = setup();
+    fn crack_sha_negative_result() {
+        let (_, hashed) = setup::<Sha1>();
         assert_eq!(crack_sha::<Sha1>(&vec!["dog", "cat", "bat"], &hashed), None);
     }
 
     #[test]
-    fn crack_sha1_positive_result() {
-        let (password, hashed) = setup();
+    fn crack_sha_positive_result() {
+        let (password, hashed) = setup::<Sha1>();
         assert_eq!(
             crack_sha::<Sha1>(&vec!["dog", "frog", "frog", "bat"], &hashed).unwrap(),
             password,
+        )
+    }
+
+    #[test]
+    fn crack_sha_generic_param() {
+        let (password, hashed) = setup::<Sha256>();
+        assert_eq!(
+            crack_sha::<Sha256>(&vec!["dog", "frog", "cat"], &hashed).unwrap(),
+            password
         )
     }
 }
