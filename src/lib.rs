@@ -1,14 +1,13 @@
+use rayon::prelude::*;
 use sha2::Digest;
 
 /// Usage: stolon-hash::crack_sha::<Sha1>(wordlist, password_hash)
 
-#[allow(dead_code, unused)]
-
-fn crack_sha<'a, D>(wordlist: &Vec<&'a str>, hashed: &String) -> Option<&'a str>
+pub fn crack_sha<'a, D>(wordlist: &Vec<&'a str>, hashed: &String) -> Option<&'a str>
 where
     D: Digest,
 {
-    wordlist.into_iter().find_map(|w| {
+    wordlist.into_par_iter().find_map_first(|w| {
         let mut hasher = D::new();
         hasher.update(w.as_bytes());
         if *hashed == hex::encode(hasher.finalize()) {
