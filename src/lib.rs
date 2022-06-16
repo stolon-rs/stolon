@@ -6,7 +6,9 @@ use sha1::{Digest, Sha1};
 
 fn crack_sha1<'a>(wordlist: &Vec<&'a str>, hashed: &String) -> Option<&'a str> {
     wordlist.into_iter().find_map(|w| {
-        if *hashed == hex::encode(Sha1::digest(w.as_bytes())) {
+        let mut hasher = Sha1::new();
+        hasher.update(w.as_bytes());
+        if *hashed == hex::encode(hasher.finalize()) {
             Some(w.to_owned())
         } else {
             None
