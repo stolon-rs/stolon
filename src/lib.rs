@@ -4,7 +4,10 @@ use sha1::{Digest, Sha1};
 
 #[allow(dead_code, unused)]
 
-fn crack_sha1<'a>(wordlist: &Vec<&'a str>, hashed: &String) -> Option<&'a str> {
+fn crack_sha<'a, D>(wordlist: &Vec<&'a str>, hashed: &String) -> Option<&'a str>
+where
+    D: Digest,
+{
     wordlist.into_iter().find_map(|w| {
         let mut hasher = Sha1::new();
         hasher.update(w.as_bytes());
@@ -31,14 +34,14 @@ mod tests {
     #[test]
     fn crack_sha1_negative_result() {
         let (_, hashed) = setup();
-        assert_eq!(crack_sha1(&vec!["dog", "cat", "bat"], &hashed), None);
+        assert_eq!(crack_sha::<Sha1>(&vec!["dog", "cat", "bat"], &hashed), None);
     }
 
     #[test]
     fn crack_sha1_positive_result() {
         let (password, hashed) = setup();
         assert_eq!(
-            crack_sha1(&vec!["dog", "frog", "frog", "bat"], &hashed).unwrap(),
+            crack_sha::<Sha1>(&vec!["dog", "frog", "frog", "bat"], &hashed).unwrap(),
             password,
         )
     }
