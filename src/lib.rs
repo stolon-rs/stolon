@@ -21,8 +21,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use sha1::Sha1;
-    use sha2::Sha256;
+    use sha2::{Sha256, Sha512};
 
     fn setup<D>() -> (String, String)
     where
@@ -37,24 +36,27 @@ mod tests {
 
     #[test]
     fn crack_sha_negative_result() {
-        let (_, hashed) = setup::<Sha1>();
-        assert_eq!(crack_sha::<Sha1>(&vec!["dog", "cat", "bat"], &hashed), None);
+        let (_, hashed) = setup::<Sha256>();
+        assert_eq!(
+            crack_sha::<Sha256>(&vec!["dog", "cat", "bat"], &hashed),
+            None
+        );
     }
 
     #[test]
     fn crack_sha_positive_result() {
-        let (password, hashed) = setup::<Sha1>();
+        let (password, hashed) = setup::<Sha256>();
         assert_eq!(
-            crack_sha::<Sha1>(&vec!["dog", "frog", "frog", "bat"], &hashed).unwrap(),
+            crack_sha::<Sha256>(&vec!["dog", "frog", "frog", "bat"], &hashed).unwrap(),
             password,
         )
     }
 
     #[test]
     fn crack_sha_generic_param() {
-        let (password, hashed) = setup::<Sha256>();
+        let (password, hashed) = setup::<Sha512>();
         assert_eq!(
-            crack_sha::<Sha256>(&vec!["dog", "frog", "cat"], &hashed).unwrap(),
+            crack_sha::<Sha512>(&vec!["dog", "frog", "cat"], &hashed).unwrap(),
             password
         )
     }
