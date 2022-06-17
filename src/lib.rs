@@ -3,13 +3,14 @@ use sha2::Digest;
 
 /// Usage: stolon-hash::crack_sha::<Sha1>(wordlist, password_hash)
 
-pub fn crack_sha<'a, D>(wordlist: &Vec<String>, hashed: &String) -> Option<String>
+pub fn crack_sha<D>(wordlist: &Vec<String>, hashed: &String) -> Option<String>
 where
     D: Digest,
 {
+    println!("now cracking the hash: {:?}...", hashed);
     wordlist.into_par_iter().find_map_first(|w| {
         let mut hasher = D::new();
-        hasher.update(w.as_bytes());
+        hasher.update(w.trim().as_bytes());
         if *hashed == hex::encode(hasher.finalize()) {
             Some(w.to_owned())
         } else {
@@ -39,11 +40,7 @@ mod tests {
         let (_, hashed) = setup::<Sha256>();
         assert_eq!(
             crack_sha::<Sha256>(
-                &vec![
-                    String::from("dog"),
-                    String::from("cat"),
-                    String::from("bat")
-                ],
+                &vec!["dog".to_string(), "cat".to_string(), "bat".to_string()],
                 &hashed
             ),
             None
@@ -55,11 +52,7 @@ mod tests {
         let (password, hashed) = setup::<Sha256>();
         assert_eq!(
             crack_sha::<Sha256>(
-                &vec![
-                    String::from("dog"),
-                    String::from("frog"),
-                    String::from("bat")
-                ],
+                &vec!["dog".to_string(), "frog".to_string(), "bat".to_string()],
                 &hashed
             ),
             Some(password)
@@ -71,11 +64,7 @@ mod tests {
         let (password, hashed) = setup::<Sha512>();
         assert_eq!(
             crack_sha::<Sha512>(
-                &vec![
-                    String::from("dog"),
-                    String::from("frog"),
-                    String::from("frog")
-                ],
+                &vec!["dog".to_string(), "frog".to_string(), "frog".to_string()],
                 &hashed
             ),
             Some(password)
