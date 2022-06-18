@@ -3,7 +3,7 @@ use sha2::Digest;
 
 /// Usage: stolon-hash::crack_sha::<Sha1>(wordlist, password_hash)
 
-pub fn crack_sha<D>(wordlist: &Vec<String>, hashed: &String) -> Option<String>
+pub fn crack<D>(wordlist: &Vec<String>, hashed: &String) -> Option<String>
 where
     D: Digest,
 {
@@ -39,7 +39,7 @@ mod tests {
     fn crack_sha_negative_result() {
         let (_, hashed) = setup::<Sha256>();
         assert_eq!(
-            crack_sha::<Sha256>(
+            crack::<Sha256>(
                 &vec!["dog".to_string(), "cat".to_string(), "bat".to_string()],
                 &hashed
             ),
@@ -51,7 +51,7 @@ mod tests {
     fn crack_sha_positive_result() {
         let (password, hashed) = setup::<Sha256>();
         assert_eq!(
-            crack_sha::<Sha256>(
+            crack::<Sha256>(
                 &vec!["dog".to_string(), "frog".to_string(), "bat".to_string()],
                 &hashed
             ),
@@ -63,7 +63,7 @@ mod tests {
     fn crack_sha_generic_param() {
         let (password, hashed) = setup::<Sha512>();
         assert_eq!(
-            crack_sha::<Sha512>(
+            crack::<Sha512>(
                 &vec!["dog".to_string(), "frog".to_string(), "frog".to_string()],
                 &hashed
             ),
