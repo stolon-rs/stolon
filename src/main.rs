@@ -1,13 +1,20 @@
 use sha2::{Digest, Sha256};
-use std::{env, fs, str};
+use std::{env, fs, path::PathBuf, process::ExitCode, str};
 use stolon_hash::crack;
 
-fn main() {
-    // let mut filepath = env::current_dir().expect("unable to get current dir");
-    let mut filepath = env::current_dir().unwrap();
-    filepath.push("assets");
-    filepath.push("rockyou.txt");
-    let wordlist = fs::read(filepath).unwrap();
+fn main() -> ExitCode {
+    let args: Vec<String> = env::args().collect();
+
+    if !(args.len() == 2) {
+        println!("\n\nusage: stolon_hash 'path/to/wordlist'\n\n");
+        return ExitCode::FAILURE;
+    }
+
+    let mut filepath = PathBuf::new();
+    filepath.push::<String>(args[1].parse().unwrap());
+
+    let err = format!("unable to open file: {:?}", &filepath);
+    let wordlist = fs::read(&filepath).expect(&err[..]);
 
     let mut hasher = Sha256::new();
     hasher.update("password123");
@@ -15,10 +22,12 @@ fn main() {
 
     if let Some(result) = crack::<Sha256>(&wordlist[..], &hashed[..]) {
         println!(
-            "cracked password is: \t{:?}",
+            "\n\ncracked password is: \t{:?}\n\n",
             str::from_utf8(result).unwrap()
         );
     } else {
         println!("no password was found for the hash: {:?}", hashed);
     }
+
+    ExitCode::SUCCESS
 }
