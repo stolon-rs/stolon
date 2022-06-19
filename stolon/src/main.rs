@@ -1,6 +1,6 @@
 use sha2::Sha256;
 use std::{env, fs, path::PathBuf, process::ExitCode, str};
-use stolon::crack;
+use stolon::hash::crack;
 
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
