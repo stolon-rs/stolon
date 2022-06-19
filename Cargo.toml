@@ -1,2 +1,2 @@
 [workspace]
-members = ["stolon_hash"]
+members = ["stolon"]
