@@ -32,12 +32,12 @@ mod tests {
         hasher.update("frog");
         let hashed = hasher.finalize();
         assert_eq!(
-            crack::<Sha256>(&["dog", "cat", "bat"].join("\n").as_bytes(), &hashed),
+            crack::<Sha256>(["dog", "cat", "bat"].join("\n").as_bytes(), &hashed),
             None
         );
 
         assert_eq!(
-            crack::<Sha512>(&["dog", "frog", "bat"].join("\n").as_bytes(), &hashed),
+            crack::<Sha512>(["dog", "frog", "bat"].join("\n").as_bytes(), &hashed),
             None
         )
     }
@@ -48,7 +48,7 @@ mod tests {
         hasher.update("frog");
         let hashed = hasher.finalize();
         assert_eq!(
-            crack::<Sha256>(&["dog", "frog", "bat"].join("\n").as_bytes(), &hashed),
+            crack::<Sha256>(["dog", "frog", "bat"].join("\n").as_bytes(), &hashed),
             Some("frog".as_bytes())
         );
     }
@@ -59,7 +59,7 @@ mod tests {
         hasher.update("frog");
         let hashed = hasher.finalize();
         assert_eq!(
-            crack::<Sha512>(&["dog", "frog", "frog"].join("\n").as_bytes(), &hashed),
+            crack::<Sha512>(["dog", "frog", "frog"].join("\n").as_bytes(), &hashed),
             Some("frog".as_bytes())
         );
     }

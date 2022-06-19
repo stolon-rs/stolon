@@ -5,7 +5,7 @@ use stolon_hash::crack;
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
 
-    if !(args.len() == 2) {
+    if args.len() != 2 {
         println!("\n\nusage: stolon_hash 'path/to/wordlist'\n\n");
         return ExitCode::FAILURE;
     }
