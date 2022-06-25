@@ -26,9 +26,7 @@ mod tests {
 
     #[test]
     fn crack_sha_negative_result() {
-        let mut hasher = Sha256::new();
-        hasher.update("frog");
-        let hashed = hasher.finalize();
+        let hashed = Sha256::digest("frog");
         assert_eq!(
             crack::<Sha256>(["dog", "cat", "bat"].join("\n").as_bytes(), &hashed),
             None
@@ -42,9 +40,7 @@ mod tests {
 
     #[test]
     fn crack_sha_positive_result() {
-        let mut hasher = Sha256::new();
-        hasher.update("frog");
-        let hashed = hasher.finalize();
+        let hashed = Sha256::digest("frog");
         assert_eq!(
             crack::<Sha256>(["dog", "frog", "bat"].join("\n").as_bytes(), &hashed),
             Some("frog".as_bytes())
@@ -53,9 +49,7 @@ mod tests {
 
     #[test]
     fn crack_sha_with_different_digest() {
-        let mut hasher = Sha512::new();
-        hasher.update("frog");
-        let hashed = hasher.finalize();
+        let hashed = Sha512::digest("frog");
         assert_eq!(
             crack::<Sha512>(["dog", "frog", "frog"].join("\n").as_bytes(), &hashed),
             Some("frog".as_bytes())
