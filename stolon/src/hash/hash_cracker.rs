@@ -11,9 +11,7 @@ where
         .par_split(|i| i.is_ascii_whitespace())
         .into_par_iter()
         .find_map_first(|w| {
-            let mut hasher = D::new();
-            hasher.update(w);
-            if *hashed == hasher.finalize()[..] {
+            if hashed.eq(&D::digest(w)[..]) {
                 Some(w)
             } else {
                 None
