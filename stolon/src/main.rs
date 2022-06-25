@@ -1,4 +1,4 @@
-use sha2::{Digest, Sha256, Sha512};
+use sha2::{Sha256, Sha512};
 use std::{env, fs, path::PathBuf, process::ExitCode, str};
 use stolon::hash::crack;
 
