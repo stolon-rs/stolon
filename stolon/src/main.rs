@@ -1,13 +1,14 @@
-use sha2::Sha256;
+use sha2::{Sha256, Sha512};
 use std::{env, fs, path::PathBuf, process::ExitCode, str};
 use stolon::hash::crack;
 
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
 
-    if args.len() != 3 {
+    if args.len() != 4 {
         println!("\n\nusage: stolon_hash 'path/to/wordlist' 'password-hash'");
-        println!("example: stolon_hash '/home/user/Downloads/rockyou.txt' 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f'\n\n");
+        // 'password123' => 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f'
+        println!("example: stolon_hash 'rockyou.txt' 'ef773d4473e94f...' Sha256\n\n");
         return ExitCode::FAILURE;
     }
 
@@ -19,7 +20,12 @@ fn main() -> ExitCode {
     let wordlist = fs::read(&filepath).expect(&err[..]);
 
     // TODO: figure out the hash algorithm based on magic numbers
-    if let Some(result) = crack::<Sha256>(&wordlist[..], &hashed[..]) {
+    let crack_hash = match args[3].to_lowercase().as_str() {
+        "sha256" => crack::<Sha256>,
+        _ => crack::<Sha512>,
+    };
+
+    if let Some(result) = crack_hash(&wordlist[..], &hashed[..]) {
         println!(
             "\n\ncracked password is: \t{:?}\n\n",
             str::from_utf8(result).unwrap()
