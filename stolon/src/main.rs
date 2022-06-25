@@ -1,5 +1,5 @@
 use std::{env, fs, path::PathBuf, process::ExitCode, str};
-use stolon::hash::Hasher;
+use stolon::hash::HasherCracker;
 
 fn main() -> ExitCode {
     let args: Vec<String> = env::args().collect();
@@ -19,7 +19,7 @@ fn main() -> ExitCode {
     let wordlist = fs::read(&filepath).expect(&err[..]);
 
     // TODO: figure out the hash algorithm based on magic numbers
-    let crack_hash = args[3].as_str().identify();
+    let crack_hash = args[3].as_str().crack();
 
     if let Some(result) = crack_hash(&wordlist[..], &hashed[..]) {
         println!(

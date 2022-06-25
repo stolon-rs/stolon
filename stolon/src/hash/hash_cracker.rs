@@ -1,7 +1,21 @@
 use rayon::prelude::*;
-use sha2::Digest;
+use sha2::{Digest, Sha256, Sha512};
 
 /// Usage: stolon-hash::crack::<Sha256>(wordlist_bytes, hashed_password)
+
+pub trait HasherCracker {
+    fn crack<'a>(&self) -> fn(&'a [u8], &'a [u8]) -> Option<&'a [u8]>;
+}
+
+impl HasherCracker for &str {
+    fn crack<'a>(&self) -> fn(&'a [u8], &'a [u8]) -> Option<&'a [u8]> {
+        if self.to_lowercase().eq("sha256") {
+            crack::<Sha256>
+        } else {
+            crack::<Sha512>
+        }
+    }
+}
 
 pub fn crack<'a, D>(wordlist: &'a [u8], hashed: &'a [u8]) -> Option<&'a [u8]>
 where
