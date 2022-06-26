@@ -166,7 +166,7 @@ mod tests {
 
     #[test]
     fn identify_sha256() {
-        let hs = "2c740d20dab7f14ec30510a11f8fd78b82bc3a711abe8a993acdb323e78e6d5e";
+        let hs = "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f";
         assert_eq!(is_sha256(hs), true);
     }
 
