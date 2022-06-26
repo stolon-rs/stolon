@@ -23,7 +23,7 @@ impl HasherCracker for &str {
 
 pub fn crack<'a>(wordlist: &'a [u8], hashed: &'a [u8]) -> Option<&'a [u8]> {
     if let Some(algoname) = hex::encode(hashed).as_str().algorithm_name() {
-        algoname.cracker()(wordlist, &hashed)
+        algoname.cracker()(wordlist, hashed)
     } else {
         None
     }

@@ -143,7 +143,7 @@ impl HashIdentity for &str {
     }
 }
 
-fn is_sha256<'a>(hash: &'a str) -> bool {
+fn is_sha256(hash: &str) -> bool {
     let hs = "2c740d20dab7f14ec30510a11f8fd78b82bc3a711abe8a993acdb323e78e6d5e";
     hash.len() == hs.len()
         && !hash.chars().all(char::is_numeric)
@@ -151,7 +151,7 @@ fn is_sha256<'a>(hash: &'a str) -> bool {
         && hash.chars().all(char::is_alphanumeric)
 }
 
-fn is_sha512<'a>(hash: &'a str) -> bool {
+fn is_sha512(hash: &str) -> bool {
     let hs = "ea8e6f0935b34e2e6573b89c0856c81b831ef2cadfdee9f44eb9aa0955155ba5e8dd97f85c73f030666846773c91404fb0e12fb38936c56f8cf38a33ac89a24e";
 
     hash.len() == hs.len()
@@ -167,12 +167,12 @@ mod tests {
     #[test]
     fn identify_sha256() {
         let hs = "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f";
-        assert_eq!(is_sha256(hs), true);
+        assert!(is_sha256(hs));
     }
 
     #[test]
     fn identify_sha512() {
         let hs = "ea8e6f0935b34e2e6573b89c0856c81b831ef2cadfdee9f44eb9aa0955155ba5e8dd97f85c73f030666846773c91404fb0e12fb38936c56f8cf38a33ac89a24e";
-        assert_eq!(is_sha512(hs), true);
+        assert!(is_sha512(hs));
     }
 }
