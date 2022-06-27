@@ -1,0 +1,21 @@
+[package]
+name = "stolon"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sha2 = "0.10"
+hex = "0.4"
+rayon = "1.5.3"
+phf = {version = "0.10", features = ["macros"]}
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "crack"
+harness = false
+
+[[bin]]
+name = "stolon"
+path = "src/main.rs"
